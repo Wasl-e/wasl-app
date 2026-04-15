@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Trip {
+  id                Int        @id @default(autoincrement())
+
+  departureSite     String
+  arrivalSite       String
+
+  availableFromTime String
+  latestDeliveryTime String?
+
+  availableFromDate   DateTime?
+  latestDeliveryDate  DateTime?
+
+  vehicleType       String
+  vehiclePlate      String
+
+  driverName        String?
+
+  comment           String?
+
+  status            TripStatus @default(PENDING)
+
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+}
+
+enum TripStatus {
+  PENDING
+  EN_ROUTE
+  DELIVERED
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
