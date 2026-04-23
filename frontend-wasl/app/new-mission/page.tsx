@@ -162,6 +162,7 @@ export default function NewMissionPage() {
                 <label className="block text-sm text-[#666] mb-2">Site de départ</label>
               <select
                 name="departureSite"
+                required
                 value={form.departureSite}
                 onChange={handleChange}
                 className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white outline-none focus:border-[#C8A84E]"
@@ -181,6 +182,7 @@ export default function NewMissionPage() {
                 <label className="block text-sm text-[#666] mb-2">Site d'arrivée</label>
                 <select
                 name="arrivalSite"
+                required
                 value={form.arrivalSite}
                 onChange={handleChange}
                 className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white outline-none focus:border-[#C8A84E]"
@@ -211,6 +213,7 @@ export default function NewMissionPage() {
                 <input
                   ref={dateRef}
                   type="date"
+                  required
                   name="availableFromDate"
                   value={form.availableFromDate}
                   onChange={handleChange}
@@ -223,6 +226,7 @@ export default function NewMissionPage() {
                 <label className="block text-sm text-[#666] mb-2">Heure</label>
                 <input
                   type="time" 
+                  required
                   name="availableFromTime"
                   value={form.availableFromTime}
                   onChange={handleChange}
@@ -236,6 +240,7 @@ export default function NewMissionPage() {
                 </label>
                 <input
                   type="date"
+                  required
                   name="latestDeliveryDate"
                   value={form.latestDeliveryDate}
                   onChange={handleChange}
@@ -247,6 +252,7 @@ export default function NewMissionPage() {
                 <label className="block text-sm text-[#666] mb-2">Heure</label>
                 <input
                   type="time"
+                  required
                   name="latestDeliveryTime"
                   value={form.latestDeliveryTime}
                   onChange={handleChange}
@@ -267,6 +273,7 @@ export default function NewMissionPage() {
                 <label className="block text-sm text-[#666] mb-2">Type de véhicule</label>
                 <input
                   name="vehicleType"
+                  required
                   value={form.vehicleType}
                   onChange={handleChange}
                   placeholder="Ex : Dacia"
@@ -278,6 +285,7 @@ export default function NewMissionPage() {
                 <label className="block text-sm text-[#666] mb-2">Immatriculation</label>
                 <input
                   name="vehiclePlate"
+                  required
                   value={form.vehiclePlate}
                   onChange={handleChange}
                   placeholder="Ex : 78291-A-6"
