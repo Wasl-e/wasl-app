@@ -274,8 +274,8 @@ export default function Dashboard() {
 
       {/* TABLE */}
       <div className="px-6 pb-8">
-        <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl overflow-hidden min-h-[420px]">
+          <table className="w-full text-sm table-fixed">
             <thead className="text-left text-[#777] border-b border-[#1A1A1A]">
               <tr>
                 <th className="p-4">REF</th>
@@ -286,14 +286,14 @@ export default function Dashboard() {
                 )}
                 <th className="p-4">À PARTIR DE</th>
                 <th className="p-4">DEADLINE</th>
-                <th className="p-4">STATUT</th>
+                <th className="p-4 w-[180px]">STATUT</th>
               </tr>
             </thead>
 
             <tbody>
               {filteredTrips.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-gray-500">
+                  <td colSpan={user?.role === "ADMIN" ? 7 : 6} className="p-8 text-center text-gray-500">
                     Aucune mission trouvée
                   </td>
                 </tr>
@@ -302,7 +302,7 @@ export default function Dashboard() {
                   <tr
                     key={trip.id}
                     onClick={() => {
-                    setSelectedTrip(trip);
+                      setSelectedTrip(trip);
                       setEditForm({
                         departureSite: trip.departureSite || "",
                         arrivalSite: trip.arrivalSite || "",
@@ -334,11 +334,13 @@ export default function Dashboard() {
                     <td className="p-4 text-[#999]">
                       {trip.vehicleType} — {trip.vehiclePlate}
                     </td>
+
                     {user?.role === "ADMIN" && (
                       <td className="p-4 text-[#999]">
                         {trip.driverName || "—"}
                       </td>
                     )}
+
                     <td className="p-4 text-[#999]">
                       {formatDate(trip.availableFromDate)} — {trip.availableFromTime || "—"}
                     </td>
@@ -347,13 +349,13 @@ export default function Dashboard() {
                       {formatDate(trip.latestDeliveryDate)} — {trip.latestDeliveryTime || "—"}
                     </td>
 
-                    <td className="p-4">
+                    <td className="p-4 w-[180px]">
                       {user?.role === "ADMIN" ? (
                         <select
                           value={trip.status}
                           onClick={(e) => e.stopPropagation()}
                           onChange={(e) => handleStatusChange(trip.id, e.target.value)}
-                          className={`px-3 py-1 rounded-full text-xs border bg-transparent outline-none cursor-pointer ${getStatusClasses(
+                          className={`w-[130px] px-3 py-1 rounded-full text-xs border bg-transparent outline-none cursor-pointer ${getStatusClasses(
                             trip.status,
                           )}`}
                         >
@@ -367,9 +369,9 @@ export default function Dashboard() {
                             Livré
                           </option>
                         </select>
-                        ) : (
+                      ) : (
                         <span
-                          className={`inline-flex px-3 py-1 rounded-full text-xs border ${getStatusClasses(
+                          className={`inline-flex justify-center items-center w-[130px] px-3 py-1 rounded-full text-xs border ${getStatusClasses(
                             trip.status,
                           )}`}
                         >
