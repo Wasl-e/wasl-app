@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import { createTrip } from "@/lib/api";
 import { getToken, getStoredUser } from "@/lib/session";
 import { useEffect } from "react";
+import { useRef } from "react";
+
 
 export default function NewMissionPage() {
   const router = useRouter();
 
   const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const dateRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
     departureSite: "",
@@ -24,6 +28,26 @@ export default function NewMissionPage() {
     driverName: "",
     comment: "",
     });
+
+    const sites = [
+    "Casablanca centre-ville",
+    "Casablanca Aéroport",
+    "Rabat centre-ville",
+    "Rabat Aéroport",
+    "Tanger Aéroport",
+    "Plateforme Tanger free zone",
+    "Marrakech centre-ville",
+    "Marrakech Aéroport",
+    "Plateforme Marrakech",
+    "Agadir centre-ville",
+    "Agadir Aéroport",
+    "Essaouira",
+    "Fés centre-ville",
+    "Fés Aéroport",
+    "Oujda",
+    "Ouarzazate",
+    "Plateforme Kénitra",
+  ];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -39,7 +63,6 @@ export default function NewMissionPage() {
 
         try {
             setIsSubmitting(true);
-
             await createTrip({
             departureSite: form.departureSite,
             arrivalSite: form.arrivalSite,
@@ -59,8 +82,9 @@ export default function NewMissionPage() {
             setTimeout(() => {
             router.push("/home");
             }, 800);
-        } catch (error) {
-            console.error("Erreur lors de la création de la mission :", error);
+        } catch (error: any) {
+        console.error("Erreur création mission :", error);
+        alert(error.message || "Erreur lors de la création de la mission");
         } finally {
             setIsSubmitting(false);
         }
@@ -98,7 +122,11 @@ export default function NewMissionPage() {
               Tableau de bord
             </button>
 
-            <button type="button" className="hover:text-white transition">
+            <button 
+            type="button" 
+            className="hover:text-white transition"
+            onClick={() => router.push("/facturation")}
+            >
               Facturation
             </button>
           </div>
@@ -138,30 +166,45 @@ export default function NewMissionPage() {
             <h2 className="text-[#C8A84E] text-xs tracking-[0.2em] font-semibold mb-5">
               TRAJET
             </h2>
-
+            {/* FILTRE */}
             <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-end">
               <div>
                 <label className="block text-sm text-[#666] mb-2">Site de départ</label>
-                <input
-                  name="departureSite"
-                  value={form.departureSite}
-                  onChange={handleChange}
-                  placeholder="Sélectionner"
-                  className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white placeholder:text-[#666] outline-none focus:border-[#C8A84E]"
-                />
+              <select
+                name="departureSite"
+                value={form.departureSite}
+                onChange={handleChange}
+                className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white outline-none focus:border-[#C8A84E]"
+              >
+                <option value="" className="bg-[#111] text-[#666]">
+                  Sélectionner
+                </option>
+                {sites.map((site) => (
+                  <option key={site} value={site} className="bg-[#111] text-white">
+                    {site}
+                  </option>
+                ))}
+              </select>
               </div>
-
               <div className="pb-3 text-[#C8A84E] text-2xl">→</div>
-
               <div>
                 <label className="block text-sm text-[#666] mb-2">Site d'arrivée</label>
-                <input
-                  name="arrivalSite"
-                  value={form.arrivalSite}
-                  onChange={handleChange}
-                  placeholder="Sélectionner"
-                  className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white placeholder:text-[#666] outline-none focus:border-[#C8A84E]"
-                />
+                <select
+                name="arrivalSite"
+                value={form.arrivalSite}
+                onChange={handleChange}
+                className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white outline-none focus:border-[#C8A84E]"
+              >
+                <option value="" className="bg-[#111] text-[#666]">
+                  Sélectionner
+                </option>
+
+                {sites.map((site) => (
+                  <option key={site} value={site} className="bg-[#111] text-white">
+                    {site}
+                  </option>
+                ))}
+              </select>
               </div>
             </div>
           </section>
@@ -176,10 +219,12 @@ export default function NewMissionPage() {
               <div>
                 <label className="block text-sm text-[#666] mb-2">À partir du</label>
                 <input
+                  ref={dateRef}
                   type="date"
                   name="availableFromDate"
                   value={form.availableFromDate}
                   onChange={handleChange}
+                  onClick={() => dateRef.current?.showPicker()}
                   className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white outline-none focus:border-[#C8A84E]"
                 />
               </div>
@@ -187,7 +232,7 @@ export default function NewMissionPage() {
               <div>
                 <label className="block text-sm text-[#666] mb-2">Heure</label>
                 <input
-                  type="time"
+                  type="time" 
                   name="availableFromTime"
                   value={form.availableFromTime}
                   onChange={handleChange}
@@ -249,7 +294,7 @@ export default function NewMissionPage() {
                   className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white placeholder:text-[#666] outline-none focus:border-[#C8A84E]"
                 />
               </div>
-            </div>
+            </div>                
           </section>
 
           <div className="mt-4">

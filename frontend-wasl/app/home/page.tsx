@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import { getTrips, updateTripStatus } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { getStoredUser, getToken, logout } from "@/lib/session";
+import { updateTrip, deleteTrip } from "@/lib/api";
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
-
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState<any>(null);
   const [selectedTrip, setSelectedTrip] = useState<any>(null);
   const [activeFilter, setActiveFilter] = useState("ALL");
   const [trips, setTrips] = useState<any[]>([]);
@@ -106,6 +109,59 @@ export default function Dashboard() {
     return "border-yellow-500/30 bg-yellow-500/10 text-yellow-400";
   };
 
+  const handleEditChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setEditForm((prev: any) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleUpdateTrip = async () => {
+    if (!selectedTrip) return;
+
+    const confirmed = window.confirm("Modifier cette mission ?");
+    if (!confirmed) return;
+
+    try {
+      await updateTrip(selectedTrip.id, editForm);
+      const data = await getTrips();
+      setTrips(data);
+
+      const updated = data.find((trip: any) => trip.id === selectedTrip.id);
+      setSelectedTrip(updated || null);
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Erreur lors de la modification :", error);
+    }
+  };
+
+  const handleDeleteTrip = async () => {
+    if (!selectedTrip) return;
+
+    const confirmed = window.confirm("Supprimer cette mission ?");
+    if (!confirmed) return;
+
+    try {
+      await deleteTrip(selectedTrip.id);
+      const data = await getTrips();
+      setTrips(data);
+      setSelectedTrip(null);
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+    }
+  };
+
+  const today = new Date();
+
+  const formattedDate = today.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <div className="bg-[#0A0A0A] min-h-screen text-[#666] font-sans">
       {/* NAVBAR */}
@@ -117,20 +173,20 @@ export default function Dashboard() {
             <button className="bg-[#13110A] border border-[#C8A84E] text-[#C8A84E] px-4 py-2 rounded-lg">
               Tableau de bord
             </button>
-
-            <button className="bg-[#111] border border-[#1A1A1A] px-4 py-2 rounded-lg hover:border-[#C8A84E]">
+            <button 
+            className="bg-[#111] border border-[#1A1A1A] px-4 py-2 rounded-lg hover:border-[#C8A84E]"
+            onClick={() => router.push("/facturation")}
+            >
               Facturation
             </button>
-
-            <button
-              onClick={() => {
-                logout();
-                router.push("/login");
-              }}
-              className="text-sm text-[#666] hover:text-white transition"
-            >
-              Déconnexion
-            </button>
+            {user?.role === "ADMIN" && (
+              <button
+                onClick={() => router.push("/tarifs")}
+                className="bg-[#111] border border-[#1A1A1A] px-4 py-2 rounded-lg hover:border-[#C8A84E]"
+              >
+                Tarifs
+              </button>
+            )}
           </div>
         </div>
 
@@ -145,13 +201,23 @@ export default function Dashboard() {
           <div className="px-3 py-1 rounded-md bg-[#D94841] text-white text-sm font-semibold">
             AVIS
           </div>
+          
+          <button
+              onClick={() => {
+                logout();
+                router.push("/login");
+              }}
+              className="text-sm text-[#666] hover:text-white transition"
+            >
+              Déconnexion
+           </button>
         </div>
       </div>
 
       {/* HEADER */}
       <div className="px-6 pt-8 pb-2">
         <h2 className="text-white text-3xl font-semibold">
-          Bonjour AVIS, <span className="text-[#666] text-xl font-normal">14 avril 2026</span>
+          Bonjour AVIS,{" "} <span className="text-[#666] text-xl font-normal">{formattedDate}</span>
         </h2>
       </div>
 
@@ -233,7 +299,26 @@ export default function Dashboard() {
                 filteredTrips.map((trip) => (
                   <tr
                     key={trip.id}
-                    onClick={() => setSelectedTrip(trip)}
+                    onClick={() => {
+                    setSelectedTrip(trip);
+                      setEditForm({
+                        departureSite: trip.departureSite || "",
+                        arrivalSite: trip.arrivalSite || "",
+                        availableFromDate: trip.availableFromDate
+                          ? trip.availableFromDate.split("T")[0]
+                          : "",
+                        availableFromTime: trip.availableFromTime || "",
+                        latestDeliveryDate: trip.latestDeliveryDate
+                          ? trip.latestDeliveryDate.split("T")[0]
+                          : "",
+                        latestDeliveryTime: trip.latestDeliveryTime || "",
+                        vehicleType: trip.vehicleType || "",
+                        vehiclePlate: trip.vehiclePlate || "",
+                        driverName: trip.driverName || "",
+                        comment: trip.comment || "",
+                      });
+                      setIsEditing(false);
+                    }}
                     className="cursor-pointer transition hover:bg-[#0F0F0F]"
                   >
                     <td className="p-4 text-[#C8A84E] font-medium">
@@ -306,8 +391,8 @@ export default function Dashboard() {
             onClick={() => setSelectedTrip(null)}
           />
 
-          <div className="fixed top-0 right-0 w-[380px] h-full bg-[#111] border-l border-[#1A1A1A] p-6 z-50 shadow-2xl">
-            <div className="flex justify-between items-center mb-6">
+          <div className="fixed top-0 right-0 w-[380px] h-full bg-[#111] border-l border-[#1A1A1A] z-50 shadow-2xl flex flex-col">
+            <div className="p-6 border-b border-[#1A1A1A] flex justify-between items-center">
               <h2 className="text-white font-semibold text-lg">Mission</h2>
 
               <button
@@ -317,7 +402,7 @@ export default function Dashboard() {
                 ✕
               </button>
             </div>
-
+          <div className="flex-1 overflow-y-auto p-6">
             <div className="space-y-5 text-sm text-gray-300">
               <div>
                 <p className="text-gray-500 mb-1">Référence</p>
@@ -326,21 +411,72 @@ export default function Dashboard() {
 
               <div>
                 <p className="text-gray-500 mb-1">Trajet</p>
-                <p className="text-white">
-                  {selectedTrip.departureSite} → {selectedTrip.arrivalSite}
-                </p>
+
+                {isEditing ? (
+                  <div className="space-y-2">
+                    <input
+                      name="departureSite"
+                      value={editForm.departureSite}
+                      onChange={handleEditChange}
+                      placeholder="Site de départ"
+                      className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
+                    />
+                    <input
+                      name="arrivalSite"
+                      value={editForm.arrivalSite}
+                      onChange={handleEditChange}
+                      placeholder="Site d'arrivée"
+                      className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
+                    />
+                  </div>
+                ) : (
+                  <p className="text-white">
+                    {selectedTrip.departureSite} → {selectedTrip.arrivalSite}
+                  </p>
+                )}
               </div>
 
               <div>
                 <p className="text-gray-500 mb-1">Véhicule</p>
-                <p className="text-white">
-                  {selectedTrip.vehicleType} — {selectedTrip.vehiclePlate}
-                </p>
+
+                {isEditing ? (
+                  <div className="space-y-2">
+                    <input
+                      name="vehicleType"
+                      value={editForm.vehicleType}
+                      onChange={handleEditChange}
+                      placeholder="Type de véhicule"
+                      className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
+                    />
+                    <input
+                      name="vehiclePlate"
+                      value={editForm.vehiclePlate}
+                      onChange={handleEditChange}
+                      placeholder="Immatriculation"
+                      className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
+                    />
+                  </div>
+                ) : (
+                  <p className="text-white">
+                    {selectedTrip.vehicleType} — {selectedTrip.vehiclePlate}
+                  </p>
+                )}
               </div>
 
               <div>
                 <p className="text-gray-500 mb-1">Chauffeur</p>
-                <p className="text-white">{selectedTrip.driverName || "—"}</p>
+
+                {isEditing ? (
+                  <input
+                    name="driverName"
+                    value={editForm.driverName}
+                    onChange={handleEditChange}
+                    placeholder="Nom du chauffeur"
+                    className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
+                  />
+                ) : (
+                  <p className="text-white">{selectedTrip.driverName || "—"}</p>
+                )}
               </div>
 
               <div>
@@ -359,31 +495,90 @@ export default function Dashboard() {
 
               <div>
                 <p className="text-gray-500 mb-1">Statut</p>
-                <select
-                  value={selectedTrip.status}
-                  onChange={(e) => handleStatusChange(selectedTrip.id, e.target.value)}
-                  className={`px-3 py-1 rounded-full text-xs border bg-transparent outline-none cursor-pointer ${getStatusClasses(
-                    selectedTrip.status,
-                  )}`}
-                >
-                  <option value="PENDING" className="bg-[#111] text-white">
-                    En attente
-                  </option>
-                  <option value="EN_ROUTE" className="bg-[#111] text-white">
-                    En route
-                  </option>
-                  <option value="DELIVERED" className="bg-[#111] text-white">
-                    Livré
-                  </option>
-                </select>
+
+                {user?.role === "ADMIN" ? (
+                  <select
+                    value={selectedTrip.status}
+                    onChange={(e) => handleStatusChange(selectedTrip.id, e.target.value)}
+                    className={`px-3 py-1 rounded-full text-xs border bg-transparent outline-none cursor-pointer ${getStatusClasses(
+                      selectedTrip.status,
+                    )}`}
+                  >
+                    <option value="PENDING" className="bg-[#111] text-white">
+                      En attente
+                    </option>
+                    <option value="EN_ROUTE" className="bg-[#111] text-white">
+                      En route
+                    </option>
+                    <option value="DELIVERED" className="bg-[#111] text-white">
+                      Livré
+                    </option>
+                  </select>
+                ) : (
+                  <span
+                    className={`inline-flex px-3 py-1 rounded-full text-xs border ${getStatusClasses(
+                      selectedTrip.status,
+                    )}`}
+                  >
+                    {getStatusLabel(selectedTrip.status)}
+                  </span>
+                )}
               </div>
 
-              <div>
-                <p className="text-gray-500 mb-1">Commentaire</p>
+             <div>
+              <p className="text-gray-500 mb-1">Commentaire</p>
+
+              {isEditing ? (
+                <textarea
+                  name="comment"
+                  value={editForm.comment}
+                  onChange={handleEditChange}
+                  className="w-full min-h-[90px] bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
+                />
+              ) : (
                 <p className="text-white">{selectedTrip.comment || "—"}</p>
-              </div>
+              )}
             </div>
           </div>
+        </div>
+          <div className="p-6 border-t border-[#1A1A1A]">
+            <div className="flex gap-3">
+              {!isEditing ? (
+                  <>
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="px-4 py-2 rounded-lg border border-[#C8A84E] text-[#C8A84E] hover:bg-[#13110A]"
+                    >
+                      Modifier
+                    </button>
+
+                    <button
+                      onClick={handleDeleteTrip}
+                      className="px-4 py-2 rounded-lg border border-red-500 text-red-400 hover:bg-red-500/10"
+                    >
+                      Supprimer
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleUpdateTrip}
+                      className="px-4 py-2 rounded-lg border border-[#C8A84E] bg-[#C8A84E] text-black"
+                    >
+                      Enregistrer
+                    </button>
+
+                    <button
+                      onClick={() => setIsEditing(false)}
+                      className="px-4 py-2 rounded-lg border border-[#1A1A1A] text-gray-300"
+                    >
+                      Annuler
+                    </button>
+                  </>
+                )}
+            </div>
+          </div>
+        </div>
         </>
       )}
     </div>
