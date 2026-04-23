@@ -25,7 +25,6 @@ export default function NewMissionPage() {
     latestDeliveryTime: "",
     vehicleType: "",
     vehiclePlate: "",
-    driverName: "",
     comment: "",
     });
 
@@ -65,7 +64,6 @@ export default function NewMissionPage() {
             vehicleType: form.vehicleType,
             vehiclePlate: form.vehiclePlate,
             comment: form.comment,
-            driverName: form.driverName,
             status: "PENDING",
             });
 
@@ -271,7 +269,7 @@ export default function NewMissionPage() {
                   name="vehicleType"
                   value={form.vehicleType}
                   onChange={handleChange}
-                  placeholder="Sélectionner"
+                  placeholder="Ex : Dacia"
                   className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white placeholder:text-[#666] outline-none focus:border-[#C8A84E]"
                 />
               </div>
@@ -288,17 +286,6 @@ export default function NewMissionPage() {
               </div>
             </div>                
           </section>
-
-          <div className="mt-4">
-            <label className="block text-sm text-[#666] mb-2">Chauffeur</label>
-            <input
-                name="driverName"
-                value={form.driverName}
-                onChange={handleChange}
-                placeholder="Ex : Youssef B."
-                className="w-full bg-[#111] border border-[#1A1A1A] rounded-xl px-4 py-3 text-white placeholder:text-[#666] outline-none focus:border-[#C8A84E]"
-            />
-        </div>
 
           {/* COMMENTAIRE */}
           <section className="border-t border-[#111] pt-6">
