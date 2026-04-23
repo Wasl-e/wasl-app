@@ -274,116 +274,118 @@ export default function Dashboard() {
 
       {/* TABLE */}
       <div className="px-6 pb-8">
-        <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl overflow-hidden min-h-[420px]">
-          <table className="w-full text-sm table-fixed">
-            <thead className="text-left text-[#777] border-b border-[#1A1A1A]">
-              <tr>
-                <th className="p-4">REF</th>
-                <th className="p-4">TRAJET</th>
-                <th className="p-4">VÉHICULE</th>
-                {user?.role === "ADMIN" && (
-                  <th className="p-4">CHAUFFEUR</th>
-                )}
-                <th className="p-4">À PARTIR DE</th>
-                <th className="p-4">DEADLINE</th>
-                <th className="p-4 w-[180px]">STATUT</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filteredTrips.length === 0 ? (
+        <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl overflow-hidden">
+          <div className="max-h-[420px] overflow-y-auto">
+            <table className="w-full text-sm table-fixed">
+              <thead className="text-left text-[#777] border-b border-[#1A1A1A]">
                 <tr>
-                  <td colSpan={user?.role === "ADMIN" ? 7 : 6} className="p-8 text-center text-gray-500">
-                    Aucune mission trouvée
-                  </td>
+                  <th className="p-4">REF</th>
+                  <th className="p-4">TRAJET</th>
+                  <th className="p-4">VÉHICULE</th>
+                  {user?.role === "ADMIN" && (
+                    <th className="p-4">CHAUFFEUR</th>
+                  )}
+                  <th className="p-4">À PARTIR DE</th>
+                  <th className="p-4">DEADLINE</th>
+                  <th className="p-4 w-[180px]">STATUT</th>
                 </tr>
-              ) : (
-                filteredTrips.map((trip) => (
-                  <tr
-                    key={trip.id}
-                    onClick={() => {
-                      setSelectedTrip(trip);
-                      setEditForm({
-                        departureSite: trip.departureSite || "",
-                        arrivalSite: trip.arrivalSite || "",
-                        availableFromDate: trip.availableFromDate
-                          ? trip.availableFromDate.split("T")[0]
-                          : "",
-                        availableFromTime: trip.availableFromTime || "",
-                        latestDeliveryDate: trip.latestDeliveryDate
-                          ? trip.latestDeliveryDate.split("T")[0]
-                          : "",
-                        latestDeliveryTime: trip.latestDeliveryTime || "",
-                        vehicleType: trip.vehicleType || "",
-                        vehiclePlate: trip.vehiclePlate || "",
-                        driverName: trip.driverName || "",
-                        comment: trip.comment || "",
-                      });
-                      setIsEditing(false);
-                    }}
-                    className="cursor-pointer transition hover:bg-[#0F0F0F]"
-                  >
-                    <td className="p-4 text-[#C8A84E] font-medium">
-                      WAS-{String(trip.id).padStart(4, "0")}
-                    </td>
+              </thead>
 
-                    <td className="p-4 text-[#D4D0C4]">
-                      {trip.departureSite} → {trip.arrivalSite}
-                    </td>
-
-                    <td className="p-4 text-[#999]">
-                      {trip.vehicleType} — {trip.vehiclePlate}
-                    </td>
-
-                    {user?.role === "ADMIN" && (
-                      <td className="p-4 text-[#999]">
-                        {trip.driverName || "—"}
-                      </td>
-                    )}
-
-                    <td className="p-4 text-[#999]">
-                      {formatDate(trip.availableFromDate)} — {trip.availableFromTime || "—"}
-                    </td>
-
-                    <td className="p-4 text-[#999]">
-                      {formatDate(trip.latestDeliveryDate)} — {trip.latestDeliveryTime || "—"}
-                    </td>
-
-                    <td className="p-4 w-[180px]">
-                      {user?.role === "ADMIN" ? (
-                        <select
-                          value={trip.status}
-                          onClick={(e) => e.stopPropagation()}
-                          onChange={(e) => handleStatusChange(trip.id, e.target.value)}
-                          className={`w-[130px] px-3 py-1 rounded-full text-xs border bg-transparent outline-none cursor-pointer ${getStatusClasses(
-                            trip.status,
-                          )}`}
-                        >
-                          <option value="PENDING" className="bg-[#111] text-white">
-                            En attente
-                          </option>
-                          <option value="EN_ROUTE" className="bg-[#111] text-white">
-                            En route
-                          </option>
-                          <option value="DELIVERED" className="bg-[#111] text-white">
-                            Livré
-                          </option>
-                        </select>
-                      ) : (
-                        <span
-                          className={`inline-flex justify-center items-center w-[130px] px-3 py-1 rounded-full text-xs border ${getStatusClasses(
-                            trip.status,
-                          )}`}
-                        >
-                          {getStatusLabel(trip.status)}
-                        </span>
-                      )}
+              <tbody>
+                {filteredTrips.length === 0 ? (
+                  <tr>
+                    <td colSpan={user?.role === "ADMIN" ? 7 : 6} className="p-8 text-center text-gray-500">
+                      Aucune mission trouvée
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  filteredTrips.map((trip) => (
+                    <tr
+                      key={trip.id}
+                      onClick={() => {
+                        setSelectedTrip(trip);
+                        setEditForm({
+                          departureSite: trip.departureSite || "",
+                          arrivalSite: trip.arrivalSite || "",
+                          availableFromDate: trip.availableFromDate
+                            ? trip.availableFromDate.split("T")[0]
+                            : "",
+                          availableFromTime: trip.availableFromTime || "",
+                          latestDeliveryDate: trip.latestDeliveryDate
+                            ? trip.latestDeliveryDate.split("T")[0]
+                            : "",
+                          latestDeliveryTime: trip.latestDeliveryTime || "",
+                          vehicleType: trip.vehicleType || "",
+                          vehiclePlate: trip.vehiclePlate || "",
+                          driverName: trip.driverName || "",
+                          comment: trip.comment || "",
+                        });
+                        setIsEditing(false);
+                      }}
+                      className="cursor-pointer transition hover:bg-[#0F0F0F]"
+                    >
+                      <td className="p-4 text-[#C8A84E] font-medium">
+                        WAS-{String(trip.id).padStart(4, "0")}
+                      </td>
+
+                      <td className="p-4 text-[#D4D0C4]">
+                        {trip.departureSite} → {trip.arrivalSite}
+                      </td>
+
+                      <td className="p-4 text-[#999]">
+                        {trip.vehicleType} — {trip.vehiclePlate}
+                      </td>
+
+                      {user?.role === "ADMIN" && (
+                        <td className="p-4 text-[#999]">
+                          {trip.driverName || "—"}
+                        </td>
+                      )}
+
+                      <td className="p-4 text-[#999]">
+                        {formatDate(trip.availableFromDate)} — {trip.availableFromTime || "—"}
+                      </td>
+
+                      <td className="p-4 text-[#999]">
+                        {formatDate(trip.latestDeliveryDate)} — {trip.latestDeliveryTime || "—"}
+                      </td>
+
+                      <td className="p-4 w-[180px]">
+                        {user?.role === "ADMIN" ? (
+                          <select
+                            value={trip.status}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => handleStatusChange(trip.id, e.target.value)}
+                            className={`w-[130px] px-3 py-1 rounded-full text-xs border bg-transparent outline-none cursor-pointer ${getStatusClasses(
+                              trip.status,
+                            )}`}
+                          >
+                            <option value="PENDING" className="bg-[#111] text-white">
+                              En attente
+                            </option>
+                            <option value="EN_ROUTE" className="bg-[#111] text-white">
+                              En route
+                            </option>
+                            <option value="DELIVERED" className="bg-[#111] text-white">
+                              Livré
+                            </option>
+                          </select>
+                        ) : (
+                          <span
+                            className={`inline-flex justify-center items-center w-[130px] px-3 py-1 rounded-full text-xs border ${getStatusClasses(
+                              trip.status,
+                            )}`}
+                          >
+                            {getStatusLabel(trip.status)}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
