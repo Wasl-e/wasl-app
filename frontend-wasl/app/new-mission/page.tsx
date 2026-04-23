@@ -30,23 +30,15 @@ export default function NewMissionPage() {
     });
 
     const sites = [
-    "Casablanca centre-ville",
-    "Casablanca Aéroport",
-    "Rabat centre-ville",
-    "Rabat Aéroport",
-    "Tanger Aéroport",
-    "Plateforme Tanger free zone",
-    "Marrakech centre-ville",
-    "Marrakech Aéroport",
-    "Plateforme Marrakech",
-    "Agadir centre-ville",
-    "Agadir Aéroport",
-    "Essaouira",
-    "Fés centre-ville",
-    "Fés Aéroport",
-    "Oujda",
+    "Agadir",
     "Ouarzazate",
-    "Plateforme Kénitra",
+    "Marrakech",
+    "Casablanca – Aéroport Mohammed V",
+    "Rabat",
+    "Tanger",
+    "Fès",
+    "Oujda",
+    "Essaouira",
   ];
 
   const handleChange = (

@@ -198,8 +198,8 @@ export default function Dashboard() {
             + Nouvelle mission
           </button>
               
-          <div className="px-3 py-1 rounded-md bg-[#D94841] text-white text-sm font-semibold">
-            AVIS
+          <div className="px-3 py-1 rounded-md bg-green-600 text-white text-sm font-bold tracking-wide">
+            EUROPCAR
           </div>
           
           <button
@@ -217,7 +217,7 @@ export default function Dashboard() {
       {/* HEADER */}
       <div className="px-6 pt-8 pb-2">
         <h2 className="text-white text-3xl font-semibold">
-          Bonjour AVIS,{" "} <span className="text-[#666] text-xl font-normal">{formattedDate}</span>
+          Bonjour EUROPCAR,{" "} <span className="text-[#666] text-xl font-normal">{formattedDate}</span>
         </h2>
       </div>
 
