@@ -30,6 +30,10 @@ model Trip {
 
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
+
+  amountHt   Float?
+  invoiceId  Int?
+  invoice    Invoice? @relation(fields: [invoiceId], references: [id])
 }
 
 enum TripStatus {
@@ -50,4 +54,38 @@ model User {
 enum UserRole {
   ADMIN
   USER
+}
+
+model Invoice {
+  id         Int           @id @default(autoincrement())
+  reference  String        @unique
+  startDate  DateTime
+  endDate    DateTime
+  status     InvoiceStatus @default(PENDING)
+
+  totalHt    Float         @default(0)
+  taxAmount  Float         @default(0)
+  totalTtc   Float         @default(0)
+
+  trips      Trip[]
+
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+}
+
+model PricingRoute {
+  id            Int      @id @default(autoincrement())
+  departureSite String
+  arrivalSite   String
+  amountHt      Float
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([departureSite, arrivalSite])
 }

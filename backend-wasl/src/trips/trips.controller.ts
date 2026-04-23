@@ -47,7 +47,12 @@ export class TripsController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body: any) {
+    return this.tripsService.update(Number(id), body);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.tripsService.delete(Number(id));
