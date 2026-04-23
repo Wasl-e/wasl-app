@@ -281,7 +281,9 @@ export default function Dashboard() {
                 <th className="p-4">REF</th>
                 <th className="p-4">TRAJET</th>
                 <th className="p-4">VÉHICULE</th>
-                <th className="p-4">CHAUFFEUR</th>
+                {user?.role === "ADMIN" && (
+                  <th className="p-4">CHAUFFEUR</th>
+                )}
                 <th className="p-4">À PARTIR DE</th>
                 <th className="p-4">DEADLINE</th>
                 <th className="p-4">STATUT</th>
@@ -332,11 +334,11 @@ export default function Dashboard() {
                     <td className="p-4 text-[#999]">
                       {trip.vehicleType} — {trip.vehiclePlate}
                     </td>
-
-                    <td className="p-4 text-[#999]">
-                      {trip.driverName || "—"}
-                    </td>
-
+                    {user?.role === "ADMIN" && (
+                      <td className="p-4 text-[#999]">
+                        {trip.driverName || "—"}
+                      </td>
+                    )}
                     <td className="p-4 text-[#999]">
                       {formatDate(trip.availableFromDate)} — {trip.availableFromTime || "—"}
                     </td>
@@ -466,7 +468,7 @@ export default function Dashboard() {
               <div>
                 <p className="text-gray-500 mb-1">Chauffeur</p>
 
-                {isEditing ? (
+                {isEditing && user?.role === "ADMIN" ? (
                   <input
                     name="driverName"
                     value={editForm.driverName}
