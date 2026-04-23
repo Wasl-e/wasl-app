@@ -440,7 +440,6 @@ export default function Dashboard() {
 
               <div>
                 <p className="text-gray-500 mb-1">Véhicule</p>
-
                 {isEditing ? (
                   <div className="space-y-2">
                     <input
@@ -465,22 +464,20 @@ export default function Dashboard() {
                 )}
               </div>
 
-              <div>
-                <p className="text-gray-500 mb-1">Chauffeur</p>
-
-                {isEditing && user?.role === "ADMIN" ? (
-                  <input
-                    name="driverName"
-                    value={editForm.driverName}
-                    onChange={handleEditChange}
-                    placeholder="Nom du chauffeur"
-                    className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
-                  />
-                ) : (
-                  <p className="text-white">{selectedTrip.driverName || "—"}</p>
-                )}
-              </div>
-
+              {isEditing && user?.role === "ADMIN" && (
+                <div>
+                  <p className="text-gray-500 mb-1">Chauffeur</p>
+                    <input
+                      name="driverName"
+                      value={editForm.driverName}
+                      onChange={handleEditChange}
+                      placeholder="Nom du chauffeur"
+                      className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
+                    />
+                    <p className="text-white">{selectedTrip.driverName || "—"}</p>
+                  
+                </div>
+              )}
               <div>
                 <p className="text-gray-500 mb-1">Départ</p>
                 <p className="text-white">
