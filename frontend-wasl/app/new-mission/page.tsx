@@ -126,8 +126,8 @@ export default function NewMissionPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="px-3 py-1 rounded-md bg-[#D94841] text-white text-sm font-semibold">
-            AVIS
+          <div className="px-3 py-1 rounded-md bg-green-600 text-white text-sm font-bold tracking-wide">
+            EUROPCAR
           </div>
 
         </div>
