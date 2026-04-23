@@ -1,6 +1,6 @@
 import { getToken } from "./session";
 
-const API_URL = "http://localhost:3001";
+const API_URL = "https://wasl-app.onrender.com";
 
 function getAuthHeaders() {
   const token = getToken();
