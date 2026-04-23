@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3001";
+const API_URL = "https://wasl-app.onrender.com";
 
 export async function loginUser(data: { email: string; password: string }) {
   const res = await fetch(`${API_URL}/auth/login`, {
