@@ -469,79 +469,36 @@ export default function Dashboard() {
               </div>
 
               {isEditing && user?.role === "ADMIN" && (
-                
-                  <div>
-                    <p className="text-gray-500 mb-1">Chauffeur</p>
-                      <input
-                        name="driverName"
-                        value={editForm.driverName}
-                        onChange={handleEditChange}
-                        placeholder="Nom du chauffeur"
-                        className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
-                      />
-                      <p className="text-white">{selectedTrip.driverName || "—"}</p>
-                    
-                  </div>
-                )}
                 <div>
-                  <p className="text-gray-500 mb-1">Départ</p>
-
-                  {isEditing ? (
-                    <div className="grid grid-cols-2 gap-2">
-                      <input
-                        type="date"
-                        name="availableFromDate"
-                        value={editForm.availableFromDate}
-                        onChange={handleEditChange}
-                        className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
-                      />
-
-                      <input
-                        type="time"
-                        name="availableFromTime"
-                        value={editForm.availableFromTime}
-                        onChange={handleEditChange}
-                        className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
-                      />
-                    </div>
-                  ) : (
-                    <p className="text-white">
-                      {formatDate(selectedTrip.availableFromDate)}{" "}
-                      {selectedTrip.availableFromTime || "—"}
-                    </p>
-                  )}
+                  <p className="text-gray-500 mb-1">Chauffeur</p>
+                    <input
+                      name="driverName"
+                      value={editForm.driverName}
+                      onChange={handleEditChange}
+                      placeholder="Nom du chauffeur"
+                      className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
+                    />
+                    <p className="text-white">{selectedTrip.driverName || "—"}</p>
+                  
                 </div>
+              )}
+              <div>
+                <p className="text-gray-500 mb-1">Départ</p>
+                <p className="text-white">
+                  {formatDate(selectedTrip.availableFromDate)} {selectedTrip.availableFromTime || "—"}
+                </p>
+              </div>
 
-                <div>
-                  <p className="text-gray-500 mb-1">Deadline</p>
+              <div>
+                <p className="text-gray-500 mb-1">Deadline</p>
+                <p className="text-white">
+                  {formatDate(selectedTrip.latestDeliveryDate)} {selectedTrip.latestDeliveryTime || "—"}
+                </p>
+              </div>
 
-                  {isEditing ? (
-                    <div className="grid grid-cols-2 gap-2">
-                      <input
-                        type="date"
-                        name="latestDeliveryDate"
-                        value={editForm.latestDeliveryDate}
-                        onChange={handleEditChange}
-                        className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
-                      />
-
-                      <input
-                        type="time"
-                        name="latestDeliveryTime"
-                        value={editForm.latestDeliveryTime}
-                        onChange={handleEditChange}
-                        className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
-                      />
-                    </div>
-                  ) : (
-                    <p className="text-white">
-                      {formatDate(selectedTrip.latestDeliveryDate)}{" "}
-                      {selectedTrip.latestDeliveryTime || "—"}
-                    </p>
-                  )}
-                </div>
               <div>
                 <p className="text-gray-500 mb-1">Statut</p>
+
                 {user?.role === "ADMIN" ? (
                   <select
                     value={selectedTrip.status}
@@ -570,6 +527,8 @@ export default function Dashboard() {
                   </span>
                 )}
               </div>
+
+             <div>
               <p className="text-gray-500 mb-1">Commentaire</p>
 
               {isEditing ? (
@@ -622,6 +581,7 @@ export default function Dashboard() {
                 )}
             </div>
           </div>
+        </div>
         </>
       )}
     </div>
