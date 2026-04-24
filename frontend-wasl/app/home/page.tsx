@@ -540,6 +540,7 @@ export default function Dashboard() {
                     </p>
                   )}
                 </div>
+              <div>
                 <p className="text-gray-500 mb-1">Statut</p>
                 {user?.role === "ADMIN" ? (
                   <select
@@ -569,8 +570,6 @@ export default function Dashboard() {
                   </span>
                 )}
               </div>
-
-             <div>
               <p className="text-gray-500 mb-1">Commentaire</p>
 
               {isEditing ? (
@@ -623,7 +622,6 @@ export default function Dashboard() {
                 )}
             </div>
           </div>
-        </div>
         </>
       )}
     </div>
