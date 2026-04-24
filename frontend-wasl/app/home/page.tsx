@@ -275,7 +275,7 @@ export default function Dashboard() {
       {/* TABLE */}
       <div className="px-6 pb-8">
         <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl overflow-hidden">
-          <div className="max-h-[420px] overflow-y-auto">
+          <div className="overflow-y-auto">
             <table className="w-full text-sm table-fixed">
               <thead className="text-left text-[#777] border-b border-[#1A1A1A]">
                 <tr>
@@ -469,33 +469,35 @@ export default function Dashboard() {
               </div>
 
               {isEditing && user?.role === "ADMIN" && (
+                <>
+                  <div>
+                    <p className="text-gray-500 mb-1">Chauffeur</p>
+                      <input
+                        name="driverName"
+                        value={editForm.driverName}
+                        onChange={handleEditChange}
+                        placeholder="Nom du chauffeur"
+                        className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
+                      />
+                      <p className="text-white">{selectedTrip.driverName || "—"}</p>
+                    
+                  </div>
+                
                 <div>
-                  <p className="text-gray-500 mb-1">Chauffeur</p>
-                    <input
-                      name="driverName"
-                      value={editForm.driverName}
-                      onChange={handleEditChange}
-                      placeholder="Nom du chauffeur"
-                      className="w-full bg-[#0A0A0A] border border-[#1A1A1A] rounded-lg px-3 py-2 text-white"
-                    />
-                    <p className="text-white">{selectedTrip.driverName || "—"}</p>
-                  
+                  <p className="text-gray-500 mb-1">Départ</p>
+                  <p className="text-white">
+                    {formatDate(selectedTrip.availableFromDate)} {selectedTrip.availableFromTime || "—"}
+                  </p>
                 </div>
-              )}
-              <div>
-                <p className="text-gray-500 mb-1">Départ</p>
-                <p className="text-white">
-                  {formatDate(selectedTrip.availableFromDate)} {selectedTrip.availableFromTime || "—"}
-                </p>
-              </div>
 
-              <div>
-                <p className="text-gray-500 mb-1">Deadline</p>
-                <p className="text-white">
-                  {formatDate(selectedTrip.latestDeliveryDate)} {selectedTrip.latestDeliveryTime || "—"}
-                </p>
-              </div>
-
+                <div>
+                  <p className="text-gray-500 mb-1">Deadline</p>
+                  <p className="text-white">
+                    {formatDate(selectedTrip.latestDeliveryDate)} {selectedTrip.latestDeliveryTime || "—"}
+                  </p>
+                </div>
+              </>
+                )}
               <div>
                 <p className="text-gray-500 mb-1">Statut</p>
 
